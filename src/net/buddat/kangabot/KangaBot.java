@@ -134,6 +134,9 @@ public class KangaBot extends ListenerAdapter {
 			case "!addmoney":
 				addMoney(event, splits);
 				break;
+			case "!info":
+				info(event);
+				break;
 			case "!rm":
 			case "!removemoney":
 				removeMoney(event, splits);
@@ -294,21 +297,40 @@ public class KangaBot extends ListenerAdapter {
 			}
 		
 		if (wiConnection == null) {
-			try {
-				wiConnection = (WebInterface) Naming.lookup(connectionString);
-				event.respond("Connection successful.");
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-				event.respond("Connection unsuccessful. " + e.getMessage());
-			} catch (RemoteException e) {
-				e.printStackTrace();
-				event.respond("Connection unsuccessful. " + e.getMessage());
-			} catch (NotBoundException e) {
-				e.printStackTrace();
-				event.respond("Connection unsuccessful. " + e.getMessage());
-			}
+			connect(event);
 		} else {
 			event.respond("Connection already exists. Use '!connect -f' to force a new connection.");
+		}
+	}
+
+	private boolean connect(MessageEvent event) {
+		try {
+			wiConnection = (WebInterface) Naming.lookup(connectionString);
+			event.respond("Connection successful.");
+			return true;
+		} catch (MalformedURLException | RemoteException | NotBoundException e) {
+			e.printStackTrace();
+			event.respond("Connection unsuccessful. " + e.getMessage());
+		}
+		return false;
+	}
+
+	private boolean activeConnection(MessageEvent event) {
+		if (wiConnection == null) {
+			event.respond("No active connection, attempting to connect...");
+			return connect(event);
+		}
+		return true;
+	}
+
+	private void info(MessageEvent event) {
+		if (activeConnection(event)) {
+			try {
+				wiConnection.getGameInfo(webInterfacePassword);
+			} catch (RemoteException e) {
+				e.printStackTrace();
+				event.respond("Couldn't retrieve game info: " + e.getMessage());
+			}
 		}
 	}
 

@@ -52,11 +52,21 @@
     </dependency>
     <dependency>
       <!-- Replace with whatever build version is valid, installed with:
-        mvn install:install-file "-Dfile=YOUR_SERVER_DIR/server.jar" -DgroupId=com.wurmonline
+        mvn install:install-file "-Dfile=server.jar" -DgroupId=com.wurmonline
         -DartifactId=WurmServer -Dversion=yourversion -Dpackaging=jar
       -->
       <groupId>com.wurmonline</groupId>
       <artifactId>WurmServer</artifactId>
+      <version>1188390</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <!-- Replace with whatever build version is valid, installed with:
+        mvn install:install-file "-Dfile=common.jar" -DgroupId=com.wurmonline
+        -DartifactId=WurmCommon -Dversion=yourversion -Dpackaging=jar
+      -->
+      <groupId>com.wurmonline</groupId>
+      <artifactId>WurmCommon</artifactId>
       <version>1188390</version>
       <scope>provided</scope>
     </dependency>
@@ -100,7 +110,7 @@
             <transformers>
               <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                 <manifestEntries>
-                  <Class-Path>server.jar</Class-Path>
+                  <Class-Path>server.jar common.jar</Class-Path>
                 </manifestEntries>
               </transformer>
             </transformers>
